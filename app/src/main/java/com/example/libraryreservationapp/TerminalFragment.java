@@ -8,6 +8,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.text.Editable;
@@ -184,6 +185,7 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
             BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
             BluetoothDevice device = bluetoothAdapter.getRemoteDevice(deviceAddress);
             status("connecting...");
+            Toast.makeText(getContext(), "connecting...", Toast.LENGTH_SHORT).show();
             connected = Connected.Pending;
             SerialSocket socket = new SerialSocket(getActivity().getApplicationContext(), device);
             service.connect(socket);
@@ -197,7 +199,7 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
         service.disconnect();
     }
 
-    private void send(String str) {
+    public void send(String str) {
         if(connected != Connected.True) {
             Toast.makeText(getActivity(), "not connected", Toast.LENGTH_SHORT).show();
             return;
@@ -264,12 +266,14 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
     @Override
     public void onSerialConnect() {
         status("connected");
+        Toast.makeText(getActivity(), "connected", Toast.LENGTH_SHORT).show();
         connected = Connected.True;
     }
 
     @Override
     public void onSerialConnectError(Exception e) {
         status("connection failed: " + e.getMessage());
+        Toast.makeText(getActivity(), "connection failed: ", Toast.LENGTH_SHORT).show();
         disconnect();
     }
 
@@ -289,5 +293,46 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
         status("connection lost: " + e.getMessage());
         disconnect();
     }
+
+//    public void setConnect() {
+//        deviceAddress = getArguments().getString("device");
+//        if(service != null)
+//            service.attach(this);
+//        else
+//            getActivity().startService(new Intent(getActivity(), SerialService.class)); // prevents service destroy on unbind from recreated activity caused by orientation change
+//        getActivity().bindService(new Intent(getActivity(), SerialService.class), this, Context.BIND_AUTO_CREATE);
+////        this.onServiceConnected();
+//        if(initialStart && service != null) {
+//            initialStart = false;
+//            getActivity().runOnUiThread(this::connect);
+//        }
+//    }
+
+//    public void setBluetooth() {
+//        if(getActivity().getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH))
+//            bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+//        getActivity().registerReceiver(discoveryBroadcastReceiver, discoveryIntentFilter);
+//        startScan();
+//        Bundle args = new Bundle();
+//        for (int i = 0; i < listItems.size(); i++) {
+//
+//            BluetoothUtil.Device device = listItems.get(i);
+//            // 각 요소에 대한 작업 수행
+//            String address = device.getDevice().getAddress();
+//            String macAdd = "A0:6C:65:3F:30:02";
+//            if( macAdd.equals(address)) {
+//                args.putString("device", device.getDevice().getAddress());
+//            }
+//            System.out.println(device);
+//        }
+//        terminalFragment = new TerminalFragment();
+//        terminalFragment.setArguments(args);
+//        terminalFragment.setConnect();
+////        BluetoothUtil.Device device = listItems.get(position-1);
+////        Bundle args = new Bundle();
+////        args.putString("device", device.getDevice().getAddress());
+////        Fragment fragment = new TerminalFragment();
+////        fragment.setArguments(args);
+//    }
 
 }

@@ -49,6 +49,8 @@ public class HomeFragment extends Fragment implements CheckInCheckOutDialogFragm
     private RecyclerView recyclerView, booksRecyclerView;
     private TextView textViewNoRooms, textViewNoBooks;
     private Button btnReserveRoom, btnReserveBook;
+
+    private Button btnOpenDoor;
     private RoomReservationAdapter adapter;
     private FirebaseFirestore fStore;
     private FirebaseAuth auth;
@@ -57,6 +59,8 @@ public class HomeFragment extends Fragment implements CheckInCheckOutDialogFragm
     private String bookDocID;
     private DocumentReference docRef;
     private DocumentReference bookResRef;
+
+    private DevicesFragment devicesFragment = new DevicesFragment();
 
     @Nullable
     @Override
@@ -68,6 +72,7 @@ public class HomeFragment extends Fragment implements CheckInCheckOutDialogFragm
         textViewNoRooms = v.findViewById(R.id.textViewNoRoomReservations);
 
         btnReserveBook = v.findViewById(R.id.reserveBook);
+        btnOpenDoor = v.findViewById(R.id.onpen_door);
         textViewNoBooks= v.findViewById(R.id.textViewNoBookReservations);
 
         //gets instance of firestore
@@ -80,7 +85,13 @@ public class HomeFragment extends Fragment implements CheckInCheckOutDialogFragm
         //gets the logged in users user id
         userID = auth.getUid();
 
+        getFragmentManager().beginTransaction()
+                .add(R.id.device_fragment_container, devicesFragment)
+                .commit();
 
+        btnOpenDoor.setOnClickListener(
+                vv -> devicesFragment.terminalFragment.send("1")
+        );
         btnReserveRoom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -104,6 +115,8 @@ public class HomeFragment extends Fragment implements CheckInCheckOutDialogFragm
 
         getActivity().registerReceiver(alarm_receiver, intentFilter);
 
+//        devicesFragment = new DevicesFragment();
+//        devicesFragment.setBluetooth();
 
         return v;
     }
@@ -206,6 +219,8 @@ public class HomeFragment extends Fragment implements CheckInCheckOutDialogFragm
         super.onResume();
 
         checkForReservations();
+
+//        devicesFragment.setBluetooth();
     }
 
     //shows the dialog

@@ -32,6 +32,7 @@ import androidx.fragment.app.ListFragment;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.concurrent.TimeUnit;
 
 /**
  * show list of BLE devices
@@ -54,10 +55,13 @@ public class DevicesFragment extends ListFragment {
     ActivityResultLauncher<String[]> requestBluetoothPermissionLauncherForStartScan;
     ActivityResultLauncher<String> requestLocationPermissionLauncherForStartScan;
 
+    TerminalFragment terminalFragment = new TerminalFragment();
+
     public DevicesFragment() {
         leScanCallback = (device, rssi, scanRecord) -> {
             if(device != null && getActivity() != null) {
                 getActivity().runOnUiThread(() -> { updateScan(device); });
+                getActivity().runOnUiThread(() -> { setScan(); });
             }
         };
         discoveryBroadcastReceiver = new BroadcastReceiver() {
@@ -68,6 +72,7 @@ public class DevicesFragment extends ListFragment {
                     BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                     if(device.getType() != BluetoothDevice.DEVICE_TYPE_CLASSIC && getActivity() != null) {
                         getActivity().runOnUiThread(() -> updateScan(device));
+                        getActivity().runOnUiThread(() -> { setScan(); });
                     }
                 }
                 if(BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(intent.getAction())) {
@@ -164,6 +169,8 @@ public class DevicesFragment extends ListFragment {
             if (menu != null)
                 menu.findItem(R.id.ble_scan).setEnabled(true);
         }
+        startScan();
+//        setScan();
     }
 
     @Override
@@ -184,6 +191,7 @@ public class DevicesFragment extends ListFragment {
         int id = item.getItemId();
         if (id == R.id.ble_scan) {
             startScan();
+//            setScan();
             return true;
         } else if (id == R.id.ble_scan_stop) {
             stopScan();
@@ -237,8 +245,8 @@ public class DevicesFragment extends ListFragment {
         listItems.clear();
         listAdapter.notifyDataSetChanged();
         setEmptyText("<scanning...>");
-        menu.findItem(R.id.ble_scan).setVisible(false);
-        menu.findItem(R.id.ble_scan_stop).setVisible(true);
+//        menu.findItem(R.id.ble_scan).setVisible(false);
+//        menu.findItem(R.id.ble_scan_stop).setVisible(true);
         if(scanState == ScanState.LE_SCAN) {
             leScanStopHandler.postDelayed(leScanStopCallback, LE_SCAN_PERIOD);
             new Thread(() -> bluetoothAdapter.startLeScan(null, leScanCallback), "startLeScan")
@@ -293,5 +301,68 @@ public class DevicesFragment extends ListFragment {
         Fragment fragment = new TerminalFragment();
         fragment.setArguments(args);
         getFragmentManager().beginTransaction().replace(R.id.fragment, fragment, "terminal").addToBackStack(null).commit();
+//        for (int i = 0; i < listItems.size(); i++) {
+//
+//            BluetoothUtil.Device device = listItems.get(i);
+//            String address = device.getDevice().getAddress();
+//            String macAdd = "A0:6C:65:3F:30:02";
+//            if( macAdd.equals(address)) {
+//                args.putString("device", device.getDevice().getAddress());
+//            }
+//            System.out.println(device);
+//        }
+//        fragment.setArguments(args);
+//        getFragmentManager().beginTransaction().replace(R.id.fragment, fragment, "terminal").addToBackStack(null).commit();
+    }
+
+    private void setScan() {
+
+//        BluetoothUtil.Device device = listItems.get(position-1);
+        Bundle args = new Bundle();
+//        args.putString("device", device.getDevice().getAddress());
+//        Fragment fragment = new TerminalFragment();
+//        fragment.setArguments(args);
+//        getFragmentManager().beginTransaction().replace(R.id.fragment, fragment, "terminal").addToBackStack(null).commit();
+//        startScan();
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+//        for (int i = 0; i < listItems.size(); i++) {
+//
+//            BluetoothUtil.Device device = listItems.get(i);
+//            String address = device.getDevice().getAddress();
+//            String macAdd = "A0:6C:65:3F:30:02";
+//            if( macAdd.equals(address)) {
+//                args.putString("device", device.getDevice().getAddress());
+//            }
+//            System.out.println(device);
+//        }
+//        fragment.setArguments(args);
+//        getFragmentManager().beginTransaction().replace(R.id.fragment, fragment, "terminal").addToBackStack(null).commit();
+
+        String targetMacAddress = "A0:6C:65:3F:30:02";
+        BluetoothUtil.Device targetDevice = null;
+
+        for (BluetoothUtil.Device device : listItems) {
+            String address = device.getDevice().getAddress();
+
+            if (targetMacAddress.equals(address)) {
+                targetDevice = device;
+                break;
+            }
+        }
+
+        if (targetDevice != null) {
+            args.putString("device", targetDevice.getDevice().getAddress());
+
+            terminalFragment.setArguments(args);
+            getFragmentManager().beginTransaction().replace(R.id.fragment, terminalFragment, "terminal").addToBackStack(null).commit();
+        } else {
+            // 목표 MAC 주소를 가진 기기를 못 찾은 경우 처리
+            // 예: 사용자에게 오류 메시지 표시
+        }
     }
 }

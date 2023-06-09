@@ -50,6 +50,8 @@ public class HomeActivity extends AppCompatActivity {
     private FirebaseAuth auth;
     private FirebaseFirestore db;
 
+    private DevicesFragment devicesFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,7 +101,8 @@ public class HomeActivity extends AppCompatActivity {
                         }
                     }
                 });
-
+        devicesFragment = new DevicesFragment();
+//        devicesFragment.setBluetooth();
     }
 
     @Override

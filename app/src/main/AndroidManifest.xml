@@ -24,6 +24,7 @@
         android:theme="@style/AppTheme">
 
         <activity android:name=".WIFIActivity" />
+        <activity android:name=".BlueToothMainActivity" />
         <activity android:name=".DetailActivity"></activity>
         <activity android:name=".RegisterActivity"></activity>
         <activity android:name=".ListActivity"></activity>
