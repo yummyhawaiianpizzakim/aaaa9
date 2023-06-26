@@ -23,7 +23,8 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewReservations"
         android:layout_width="match_parent"
-        android:layout_height="670dp"/>
+        android:layout_weight="1"
+        android:layout_height="500dp"/>
 
     <TextView
         android:id="@+id/textViewNoRoomReservations"
@@ -50,6 +51,7 @@
         android:id="@+id/guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:orientation="horizontal"
         app:layout_constraintGuide_begin="20dp" />
 
@@ -94,24 +96,18 @@
 <!--        android:text="@string/reserve_book"-->
 <!--        android:visibility="gone"-->
 <!--        android:layout_gravity="center_horizontal"/>-->
-
-
-    <FrameLayout
-        android:id="@+id/device_fragment_container"
-        android:layout_width="1dp"
-        android:layout_height="1dp"
-        android:layout_gravity="bottom" />
-
-
     <LinearLayout
         android:layout_height="match_parent"
         android:layout_width="match_parent"
-        android:layout_alignParentBottom="true">
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:gravity="bottom">
 
     <Button
         android:id="@+id/onpen_door"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:text="openDoor"
         android:visibility="visible"
         android:enabled="false"
@@ -120,5 +116,13 @@
         app:layout_constraintStart_toStartOf="parent"/>
 
     </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/device_fragment_container"
+        android:layout_width="1dp"
+        android:layout_height="1dp"
+        android:layout_gravity="bottom" />
+
+
 
 </LinearLayout>
