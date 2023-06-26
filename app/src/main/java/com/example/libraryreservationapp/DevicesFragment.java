@@ -28,6 +28,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.fragment.app.ListFragment;
 
 import java.util.ArrayList;
@@ -61,7 +62,6 @@ public class DevicesFragment extends ListFragment {
         leScanCallback = (device, rssi, scanRecord) -> {
             if(device != null && getActivity() != null) {
                 getActivity().runOnUiThread(() -> { updateScan(device); });
-                getActivity().runOnUiThread(() -> { setScan(); });
             }
         };
         discoveryBroadcastReceiver = new BroadcastReceiver() {
@@ -72,7 +72,6 @@ public class DevicesFragment extends ListFragment {
                     BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                     if(device.getType() != BluetoothDevice.DEVICE_TYPE_CLASSIC && getActivity() != null) {
                         getActivity().runOnUiThread(() -> updateScan(device));
-                        getActivity().runOnUiThread(() -> { setScan(); });
                     }
                 }
                 if(BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(intent.getAction())) {
@@ -265,7 +264,23 @@ public class DevicesFragment extends ListFragment {
         if (pos < 0) {
             listItems.add(-pos - 1, device2);
             listAdapter.notifyDataSetChanged();
+
+            if (device2.getDevice().getAddress().equals("A0:6C:65:3F:30:02")) {
+                getActivity().runOnUiThread(() -> { connectToDevice(device2); });
+            }
         }
+    }
+
+    private void connectToDevice(BluetoothUtil.Device device) {
+        stopScan();
+        Bundle args = new Bundle();
+        args.putString("device", device.getDevice().getAddress());
+//        Fragment fragment = new TerminalFragment();
+        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+        terminalFragment.setArguments(args);
+//        getFragmentManager().beginTransaction().replace(R.id.device_fragment_container, terminalFragment, "terminal").addToBackStack(null).commit();
+        transaction.replace(R.id.device_fragment_container, terminalFragment, "terminal").addToBackStack(null).commit();
+//
     }
 
     @SuppressLint("MissingPermission")
@@ -298,9 +313,10 @@ public class DevicesFragment extends ListFragment {
         BluetoothUtil.Device device = listItems.get(position-1);
         Bundle args = new Bundle();
         args.putString("device", device.getDevice().getAddress());
-        Fragment fragment = new TerminalFragment();
-        fragment.setArguments(args);
-        getFragmentManager().beginTransaction().replace(R.id.fragment, fragment, "terminal").addToBackStack(null).commit();
+        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+        terminalFragment.setArguments(args);
+//        getFragmentManager().beginTransaction().replace(R.id.device_fragment_container, terminalFragment, "terminal").addToBackStack(null).commit();
+        transaction.replace(R.id.device_fragment_container, terminalFragment, "terminal").addToBackStack(null).commit();
 //        for (int i = 0; i < listItems.size(); i++) {
 //
 //            BluetoothUtil.Device device = listItems.get(i);
@@ -359,7 +375,7 @@ public class DevicesFragment extends ListFragment {
             args.putString("device", targetDevice.getDevice().getAddress());
 
             terminalFragment.setArguments(args);
-            getFragmentManager().beginTransaction().replace(R.id.fragment, terminalFragment, "terminal").addToBackStack(null).commit();
+            getFragmentManager().beginTransaction().replace(R.id.device_fragment_container, terminalFragment, "terminal").addToBackStack(null).commit();
         } else {
             // 목표 MAC 주소를 가진 기기를 못 찾은 경우 처리
             // 예: 사용자에게 오류 메시지 표시

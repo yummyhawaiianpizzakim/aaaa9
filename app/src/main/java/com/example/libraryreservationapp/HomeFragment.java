@@ -71,9 +71,9 @@ public class HomeFragment extends Fragment implements CheckInCheckOutDialogFragm
         btnReserveRoom = v.findViewById(R.id.reserveRoom);
         textViewNoRooms = v.findViewById(R.id.textViewNoRoomReservations);
 
-        btnReserveBook = v.findViewById(R.id.reserveBook);
+//        btnReserveBook = v.findViewById(R.id.reserveBook);
         btnOpenDoor = v.findViewById(R.id.onpen_door);
-        textViewNoBooks= v.findViewById(R.id.textViewNoBookReservations);
+//        textViewNoBooks= v.findViewById(R.id.textViewNoBookReservations);
 
         //gets instance of firestore
         fStore = FirebaseFirestore.getInstance();
@@ -254,6 +254,8 @@ public class HomeFragment extends Fragment implements CheckInCheckOutDialogFragm
                 public void onComplete(@NonNull Task<Void> task) {
                     if(task.isSuccessful()){
                         Toast.makeText(getContext(), "이용 시작", Toast.LENGTH_SHORT).show();
+                        btnOpenDoor.setEnabled(true);
+
                     }
                     else{
                         Toast.makeText(getContext(), "아직 이용할 시간이 되지 않았습니다", Toast.LENGTH_SHORT).show();
@@ -430,8 +432,8 @@ public class HomeFragment extends Fragment implements CheckInCheckOutDialogFragm
                 if(queryDocumentSnapshots.isEmpty()){
                     //show some parts of the layout vs. others
                     booksRecyclerView.setVisibility(View.GONE);
-                    textViewNoBooks.setVisibility(View.VISIBLE);
-                    btnReserveBook.setVisibility(View.VISIBLE);
+//                    textViewNoBooks.setVisibility(View.VISIBLE);
+//                    btnReserveBook.setVisibility(View.VISIBLE);
                 }
                 else{
                     //show some parts of the layout vs. others

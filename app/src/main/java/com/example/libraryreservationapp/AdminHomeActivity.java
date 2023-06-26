@@ -79,6 +79,7 @@ public class AdminHomeActivity extends AppCompatActivity {
         //adds horizontal line between different items
         recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL));
         // sets the adapter
+//        adapter.startListening();
         recyclerView.setAdapter(adapter);
     }
 
