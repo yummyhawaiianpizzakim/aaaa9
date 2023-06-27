@@ -23,7 +23,6 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewReservations"
         android:layout_width="match_parent"
-        android:layout_weight="1"
         android:layout_height="500dp"/>
 
     <TextView

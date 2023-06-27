@@ -62,6 +62,7 @@ public class HomeFragment extends Fragment implements CheckInCheckOutDialogFragm
 
     private DevicesFragment devicesFragment = new DevicesFragment();
 
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -84,6 +85,7 @@ public class HomeFragment extends Fragment implements CheckInCheckOutDialogFragm
         auth = FirebaseAuth.getInstance();
         //gets the logged in users user id
         userID = auth.getUid();
+
 
         getFragmentManager().beginTransaction()
                 .add(R.id.device_fragment_container, devicesFragment)
